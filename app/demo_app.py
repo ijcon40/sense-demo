@@ -1,21 +1,19 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import argparse
-import numpy as np
 import pickle
-from scipy.spatial.distance import cosine
 from sklearn.decomposition import PCA
 import json
 import html
-from preprocessing.WordVectors import WordVectors
-from preprocessing.generate_sentences import generate_sentence_samples
 import re
 
 # load app constants from file
-with open("app/metadata/application_constants.json") as constants_file:
+with open("metadata/application_constants.json") as constants_file:
     app_constants = json.loads(constants_file.read())
 # variable to hold the example we are currently serving to the user
 current_example = None
+
+
 def load_example(example_id):
     """
     example_id: id of an example to load from disk
@@ -24,9 +22,11 @@ def load_example(example_id):
     # todo don't add paths like this because it's not os-agnostic
     examples_prefix = app_constants["EXAMPLES_PREFIX"]
     example_path = examples_prefix + example_id + ".pickle"
+    print(example_path)
     with open(example_path, "rb") as ex:
         global current_example
         current_example = pickle.load(ex)
+
 
 def fetch_datasets():
     """
@@ -46,12 +46,17 @@ def fetch_datasets():
      """
     with open(app_constants["EXAMPLES_CONFIG"]) as examples_config_file:
         examples_config = json.loads(examples_config_file.read())
-    return examples_config 
+    return examples_config
+
+
 app = Flask(__name__)
 app.config["IMAGE_DIR"] = os.path.join("images")
+
+
 @app.route("/")
 def index():
     return render_template("layout.html")
+
 
 @app.route("/loadDataset")
 def load_dataset():

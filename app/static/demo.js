@@ -17,7 +17,7 @@ function datasetElement(dataset_id, displayname, description, c1displayname, c2d
 htmlstring = 
 `                                   
 <div class="col mb-4">
-<a href="#" class="dataset-item list-group-item-action" onclick="datasetClick(this, ${dataset_id})"
+<a href="#" class="dataset-item list-group-item-action" onclick="datasetClick(this, '${dataset_id}')"
 style="text-decoration: none;">
 <div class="card">
 <div class="card-header">
@@ -77,10 +77,19 @@ $.ajax({
 }
 function getTabTwoData()
 {
+        //accept the id and pull in the most shifted words
+    $.ajax({
+        method: "GET",
+        url: 'getMostShiftedWords?alignment_method=s4&id='+state.dataset_selected_id
+    }).done(function(response){
+        state.tabs[3]= response;
+        updateTabThreeData()
+    });
 }
 function getTabThreeData()
 {
-// for every possible 
+// for every possible
+
 
 }
 function getTabFourData()
@@ -96,13 +105,13 @@ function getTabData(index)
             state.tabs[0] = getTabZeroData();
             break;
         case 1:
-            state.tabs[1] = getTabOneData();
+            getTabOneData();
             break;
         case 2:
             state.tabs[2] = getTabTwoData();
             break;
         case 3:
-            state.tabs[3] = getTabThreeData();
+            getTabThreeData();
             break;
         case 4:
             state.tabs[4] = getTabFourData();
